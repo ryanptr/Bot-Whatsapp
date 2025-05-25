@@ -1,0 +1,39 @@
+# Node.js & umum
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+bot.log # Spesifik untuk log bot Anda
+coverage/
+build/
+dist/
+.DS_Store
+Thumbs.db
+
+# File environment (SANGAT PENTING!)
+.env
+.env.*
+!.env.example 
+# Tanda ! di atas berarti .env.example BOLEH diupload
+
+# Baileys session data & data aplikasi
+auth_info_baileys/
+render_disk_data/ # Folder fallback jika deploy di Render dan env var belum terbaca
+subscribed_users.json
+user_limits.json
+group_settings.json
+temp/ # Folder untuk file temporary stiker
+
+# IDE & Editor
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Lain-lain
+output*.webp # Jika ada file output stiker yang tidak sengaja masuk
+input*.mp4   # Jika ada file input stiker yang tidak sengaja masuk
