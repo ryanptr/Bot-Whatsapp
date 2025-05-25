@@ -21,6 +21,7 @@ const sharp = require("sharp");
 const ffmpeg = require("fluent-ffmpeg");
 const pino = require("pino");
 const { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } = require("@google/generative-ai");
+const { TiktokAPI } = require('@tobyg74/tiktok-api-dl');
 
 // --- KONFIGURASI ---
 const GEMINI_API_KEY = "AIzaSyCzsYHBw_E1kDGvLDhf2-uZQ6okUwdP--k"; // Ganti dengan API Key Gemini Anda
@@ -319,74 +320,59 @@ async function startBot() {
 
     // --- AWAL PERINTAH PUBLIK & INFO ---
     if (commandText === '/menu' || commandText === '/help' || commandText === 'menu' || commandText === 'help') {
+    // Di dalam blok if (commandText === '/menu' || ...)
       const isPremiumAccess = isOwner || isSubscribed;
       const limitInfo = isPremiumAccess ? "Tak Terbatas" : "7/hari";
       const dailyLimitForDisplay = 7;
-      const menuString = `
-✨ *Aeronix Bot* ✨
+      const botVersion = "2.0"; // Versi baru untuk menandai perubahan
 
-Halo, ${senderName}! 👋
-AI Aeronix siap membantu Anda dengan berbagai fitur canggih!
-➖➖➖➖➖➖➖➖➖➖➖
+      const menuString = `
+☀️ *Aeronix Bot - Asisten Cerdas Anda* ☀️
+
+Halo ${senderName}! 👋
+Temukan berbagai kemudahan dengan Aeronix di bawah ini:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 👤  *PROFIL ANDA*
-> Status: ${isPremiumAccess ? "👑 Premium / Owner" : "👤 Reguler"}
-> Jatah Fitur Harian (Reguler): ${dailyLimitForDisplay}x per fitur*
-> Ingin jatah lebih? Ketik: */belilimit* 🪙
-> _(*Jatah direset setiap pk 00:00 WIB)_ 
-> _(Premium/Owner akses tanpa batas)_
-➖➖➖➖➖➖➖➖➖➖➖
-🤖  *INFO BOT*
-> Nama: Asisten Cerdas Aeronix
-> Versi: 1.9 (Fitur Grup Dasar) 
-> Pembuat: Cryanox (Modifikasi)
-> Langganan: /subscribeinfo
-➖➖➖➖➖➖➖➖➖➖➖
-👑  *ADMIN GRUP & OWNER*
-> */setwelcome* [teks] - Atur pesan sambutan
->  _(Gunakan @user & {groupName})_
-> */on welcome* - Aktifkan sambutan
-> */off welcome* - Nonaktifkan sambutan
-> */bot on* - Aktifkan bot di grup
-> */bot off* - Nonaktifkan bot di grup
-➖➖➖➖➖➖➖➖➖➖➖
-🧠  *FITUR AI*
-> */resetai* - Reset konteks AI
-> */ringkas* - Ringkas teks (Limit ${limitInfo}) 📝
-> _(Chat langsung untuk interaksi AI umum)_ 
+> Status Akun: ${isPremiumAccess ? "👑 Premium / Owner" : "👤 Reguler"}
+> Jatah Harian (Reguler): ${dailyLimitForDisplay}x per fitur*
+> Butuh Lebih? Cek: */belilimit* 🪙
+> _(*Jatah reset setiap pukul 00:00 WIB)_ 
+> _(Akses Tanpa Batas untuk Premium/Owner)_
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🤖  *INFO BOT AERONIX*
+> Nama: Aeronix AI
+> Versi: ${botVersion}
+> Oleh: Cryanox (Ryan)
+> Info Langganan: /subscribeinfo
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+💡  *FITUR UTAMA & AI*
+> */resetai* »  Reset memori percakapan
+> */ringkas* »  Buat ringkasan teks (Limit ${limitInfo}) 📝
+> _(Chat langsung untuk tanya jawab AI)_ 
 > _(Limit chat AI: ${limitInfo})_
-➖➖➖➖➖➖➖➖➖➖➖
-🖼️  *FITUR MEDIA*
-> */sticker* - Buat stiker (Limit ${limitInfo}) ✨
-➖➖➖➖➖➖➖➖➖➖➖
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🎨  *KREASI MEDIA*
+> */sticker* »  Ubah gambar/GIF jadi stiker (Limit ${limitInfo}) ✨
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 🛍️  *AERONIX SHOP*
-> */belilimit* - Info cara tambah jatah 🪙
-> */sewabot* - Sewa bot untuk grup Anda 🤖➕
+> */belilimit* »  Opsi tambah jatah limit 🪙
+> */sewabot* »  Hadirkan Aeronix di grup Anda 🤖➕
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+⚙️  *BANTUAN & UTILITAS*
+> */menu* »  Tampilkan menu bantuan ini
+> */about* »  Tentang teknologi bot
+> */ping* »  Tes kecepatan respons
+> */owner* »  Hubungi developer
+➖➖➖➖➖➖➖➖➖➖➖ 
+🌟  *PREMIUM & INFO LANGGANAN*
+> */subscribeinfo* »  Keuntungan & cara langganan
+> */fiturpremium* »  Cek fitur khusus pelanggan 👑
 ➖➖➖➖➖➖➖➖➖➖➖
-ℹ️  *BANTUAN & INFO*
-> */menu* - Menu ini
-> */about* - Info bot & teknologi
-> */ping* - Tes koneksi bot
-> */owner* - Kontak developer
-➖➖➖➖➖➖➖➖➖➖➖
-👑  *PREMIUM & LANGGANAN*
-> */subscribeinfo* - Info cara langganan
-> */fiturpremium* - Contoh fitur khusus
-➖➖➖➖➖➖➖➖➖➖➖
-🌟  *LEGENDA SIMBOL*
-> ✨ Stiker Animasi / Judul Utama
-> 🤖 Info Bot / Grup
-> 🧠 Fitur AI
-> 📝 Fitur Teks
-> 🖼️ Fitur Media
-> 👑 Khusus Langganan/Owner/Admin
-> ℹ️ Bantuan & Info
-> 🪙 Toko / Layanan Tambahan
-> 👋 Sapaan
-➖➖➖➖➖➖➖➖➖➖➖
-Terima kasih telah menggunakan Aeronix! 😊
+Semoga harimu menyenangkan dengan Aeronix! 😊
       `.trim();
+      
       await sock.sendMessage(from, { text: menuString }, { quoted: msg });
-      saveLog("COMMAND_USED", `📋 Menu ditampilkan untuk ${senderName}`);
+      saveLog("COMMAND_USED", `📋 Menu (v${botVersion}) ditampilkan untuk ${senderName}`);
       return;
     }
 
