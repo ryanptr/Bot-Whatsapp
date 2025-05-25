@@ -668,7 +668,7 @@ Terima kasih atas minat Anda!
       
       let watermark = "";
       if (!isGeneratedErrorMessage && responseText.length > 100 && !(/cryanox|ryan|aeronix|gemini/i.test(responseText))) { 
-        watermark = `\n\n_🤖 AI by Ryan (Bot by Cryanox)_`;
+        watermark = `\n\n_🤖 AI by Ryan_`;
       }
       
       if (finalMessageToSend.trim()) {
